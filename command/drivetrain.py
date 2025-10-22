@@ -59,8 +59,8 @@ class DriveSwerveCustom(SubsystemCommand[Drivetrain]):
 
     def execute(self) -> None:
         dx, dy, d_theta = (
-            self.subsystem.axis_dx.value * 1,
-            self.subsystem.axis_dy.value * -1,
+            self.subsystem.axis_dx.value * -1,
+            self.subsystem.axis_dy.value * 1,
             self.subsystem.axis_rotation.value,
         )
 
