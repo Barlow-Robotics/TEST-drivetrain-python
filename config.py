@@ -30,28 +30,28 @@ gyro_id: int = 20
 
 front_left_move_id: int = 1
 front_left_turn_id: int = 2
-front_left_encoder_port: CANcoder = CANcoder(2)
+front_left_encoder_port: CANcoder = CANcoder(20)
 front_left_encoder_zeroed_pos: float = 0.945
 front_left_turn_inverted = False
 front_left_move_inverted = False
 
 front_right_move_id: int = 3
 front_right_turn_id: int = 4
-front_right_encoder_port: CANcoder = CANcoder(3)
+front_right_encoder_port: CANcoder = CANcoder(21)
 front_right_encoder_zeroed_pos: float = 0.074
 front_right_turn_inverted = False
 front_right_move_inverted = False
 
 back_left_move_id: int = 7
 back_left_turn_id: int = 8
-back_left_encoder_port: CANcoder = CANcoder(1)
+back_left_encoder_port: CANcoder = CANcoder(23)
 back_left_encoder_zeroed_pos: float = 0.227
 back_left_turn_inverted = False
 back_left_move_inverted = False
 
 back_right_move_id: int = 5
 back_right_turn_id: int = 6
-back_right_encoder_port: CANcoder = CANcoder(0)
+back_right_encoder_port: CANcoder = CANcoder(22)
 back_right_encoder_zeroed_pos: float = 0.597
 back_right_turn_inverted = False
 back_right_move_inverted = False
