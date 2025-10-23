@@ -8,7 +8,8 @@ from units.SI import meters, meters_per_second, \
     radians_per_second, radians
 from wpilib import TimedRobot
 from toolkit.motors.ctre_motors import TalonFX
-from wpilib import AnalogEncoder
+from phoenix6.hardware import CANcoder
+
 import constants
 import ntcore
 
@@ -16,7 +17,7 @@ class SwerveNode:
     """
     Swerve node class
     """
-    def __init__(self, move: TalonFX, turn: TalonFX, encoder: AnalogEncoder, absolute_encoder_zeroed_pos: float, name: str):
+    def __init__(self, move: TalonFX, turn: TalonFX, encoder: CANcoder, absolute_encoder_zeroed_pos: float, name: str):
         self.m_move = move
         self.m_turn = turn
         self.encoder = encoder
@@ -50,7 +51,7 @@ class SwerveNode:
         """
 
         self.m_turn.set_sensor_position(0)
-        abs_encoder_position: float = self.encoder.get()
+        abs_encoder_position: float = self.encoder.get_absolute_position()
 
         # Find the difference in current and zero absolute position
         encoder_difference: float = abs_encoder_position - self.absolute_encoder_zeroed_pos
@@ -110,7 +111,7 @@ class SwerveNode:
         '''
         Gets the absolute encoder value.
         '''
-        return self.encoder.get()
+        return self.encoder.get_absolute_position()
 
     def set_motor_velocity(self, vel: meters_per_second):
         """
