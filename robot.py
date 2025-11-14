@@ -147,7 +147,7 @@ class _Robot(wpilib.TimedRobot):
         OI.init()
         OI.map_controls()
         self.scheduler.schedule(commands2.SequentialCommandGroup(
-                # command.DrivetrainZero(Robot.drivetrain),
+                command.DrivetrainZero(Robot.drivetrain),
                 command.DriveSwerveCustom(Robot.drivetrain)
         ))
         # self.scheduler.schedule(commands2.SequentialCommandGroup(
