@@ -16,7 +16,7 @@ from commands2 import SequentialCommandGroup, InstantCommand, ParallelCommandGro
 
 
 path_name = "kenny path"
-paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(2)]
+paths = [PathPlannerPath.fromChoreoTrajectory(path_name, i) for i in range(3)]
 
 command = SequentialCommandGroup(
     InstantCommand(lambda: Robot.wrist.set_coral(True)),
@@ -26,7 +26,7 @@ command = SequentialCommandGroup(
     ),
     ParallelCommandGroup(
         AutoBuilder.followPath(paths[1]),
-        Target(config.target_positions["IDLE"], Robot.wrist, Robot.elevator),
+        Target(config.target_positions["L4"], Robot.wrist, Robot.elevator),
     ),
     
     ParallelCommandGroup(
