@@ -82,7 +82,9 @@ class _Robot(wpilib.TimedRobot):
             raise e
         
         self.auto_selection = SendableChooser()
-        self.auto_selection.setDefaultOption("Three L4 Right", autos.three_l4_right)
+        self.auto_selection.setDefaultOption("kenny path", autos.kenny)
+
+        self.auto_selection.addOption("Three L4 Right", autos.three_l4_right)
         self.auto_selection.addOption("Three L4 Left", autos.three_l4_left)
         self.auto_selection.addOption("Bump", autos.three_l4_left_bump)
         self.auto_selection.addOption("Leave", autos.leave)
