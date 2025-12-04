@@ -119,7 +119,8 @@ class FieldOdometry:
         if self.cam_controller is None:
             return None
         return self.cam_controller.get_results()
-
+    
+    # current pose if updated vision or odometry  
     def update(self) -> Pose2d:
         self.update_from_internal()
 

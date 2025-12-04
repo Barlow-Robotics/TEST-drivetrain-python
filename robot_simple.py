@@ -1,5 +1,4 @@
 # import standard Python libraries
-import math
 
 # import key robotics libraries
 import commands2
@@ -7,34 +6,27 @@ import ntcore
 import phoenix6 as ctre
 import wpilib
 
-
 # import our libraries
-import command
+# import command
 import config
-import autos
 
 # import the variable Subsytem from the toolkit library
+from oi.keymap import Keymap
 from toolkit.subsystem import Subsystem
 
 # import constants
-from robot_systems import (  
+from robot_systems_simple import (  
     Robot,
-    Pneumatics,
-    Sensors,
-    LEDs,
-    PowerDistribution,
-    Field,
+    Field
 )
 
 # import the variables DriverStation and SenableChooser from wpilib for ease of use
-from wpilib import DriverStation, SendableChooser
+from wpilib import DriverStation
+import sys
 
 # import the variables
 import utils
 from oi.OI import OI
-from pathplannerlib.auto import PathPlannerPath, FollowPathCommand, AutoBuilder
-from wpimath.geometry import Pose2d, Rotation2d, Transform2d
-from utils import get_red_pose
 
 # defining the class "_Robot"
 class _Robot(wpilib.TimedRobot):
@@ -59,10 +51,10 @@ class _Robot(wpilib.TimedRobot):
         # establish the refresh period for the scheduler
         period = config.period
         self.scheduler.setPeriod(period)
+        self.log.info(f"Scheduler period set to {period} seconds")
 
         # flips the field poses from blue to red alliance field poses
         Field.flip_poses()
-        self.log.info(f"Scheduler period set to {period} seconds")
 
         # Initialize subsystems
         def init_subsystems():
@@ -89,23 +81,11 @@ class _Robot(wpilib.TimedRobot):
         # attempt to run the subsystem initialization and log any errors
         try:
             init_subsystems()
+            # pass
         except Exception as e:
             self.log.error(e)
             self.nt.getTable("errors").putString("subsystem init", str(e))
             raise e
-        
-        # define our autos
-        self.auto_selection = SendableChooser()
-        self.auto_selection.setDefaultOption("kenny path", autos.kenny)
-
-        self.auto_selection.addOption("Three L4 Right", autos.three_l4_right)
-        self.auto_selection.addOption("Three L4 Left", autos.three_l4_left)
-        self.auto_selection.addOption("Bump", autos.three_l4_left_bump)
-        self.auto_selection.addOption("Leave", autos.leave)
-        self.auto_selection.addOption("Center", autos.dealgae_center)
-
-        # allow us to choose our auto in Smart Dashboard
-        wpilib.SmartDashboard.putData("Auto", self.auto_selection)
 
         # reducing noise from the CAN bus (unused can-bus traffic optimization)
         ctre.hardware.ParentDevice.optimize_bus_utilization_for_all()
@@ -152,33 +132,13 @@ class _Robot(wpilib.TimedRobot):
                 self.nt.getTable("errors").putString("command scheduler", str(e))
                 raise e
 
-        # update the field odometry
-        pose = Field.odometry.update()
-
-        # log the pose
-        self.nt.getTable("Odometry").putNumberArray(
-            "Estimated pose", [pose.X(), pose.Y(), pose.rotation().radians()]
-        )
-        
-        # log the swerve module states including estimated pose of the robot with rotation, etc.
-        Robot.drivetrain.update_tables()
-        Sensors.cam_controller.update_tables()
 
     # called once in the transition from any state into teleop
     def teleopInit(self):
-        OI.init()
-        OI.map_controls()
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-                command.DrivetrainZero(Robot.drivetrain),
-                command.DriveSwerveCustom(Robot.drivetrain)
-        ))
-        # self.scheduler.schedule(commands2.SequentialCommandGroup(
-        #     command.SetWrist(Robot.wrist, 0),
-        #     # command.SetElevator(Robot.elevator, 0),
-        # ))
-        # self.scheduler.schedule(
-        #     command.DeployClimb(Robot.climber, upper_bound=config.climb_initial_out).onlyIf(lambda: Robot.climber.get_motor_revolutions() <= 30)
-        # )
+        Keymap.Drivetrain.ALGAE_ALIGN.onTrue(
+            Robot.drivetrain.moveMotor()
+        ).onFalse(Robot.drivetrain.moveMotor())
+        
         self.log.info("Teleop initialized")
 
     # set the specific period timing for teleop
@@ -187,27 +147,13 @@ class _Robot(wpilib.TimedRobot):
 
     # called once as we transition from any state into auto
     def autonomousInit(self):
-        auto: autos.AutoRoutine = self.auto_selection.getSelected()
-        starting_pose: Pose2d = auto.blue_start_pose if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else auto.red_start_pose
-        Robot.drivetrain.reset_odometry_auto(starting_pose)
-        self.scheduler.schedule(commands2.SequentialCommandGroup(
-            command.DrivetrainZero(Robot.drivetrain, starting_pose.rotation().radians()),
-            commands2.ParallelCommandGroup(
-                auto.command,
-                command.DeployClimb(Robot.climber, upper_bound=config.climb_initial_out)
-            )
-            
-        ))
-        # log that we have successfully entered auto
-        self.log.info("Autonomous initialized")
-
+        pass
     # set the specific period timing for auto
     def autonomousPeriodic(self):
         pass
 
     # at the end of auto set the x and y velocity to 0 and the angle to forward and cancel the auto path
     def autonomousExit(self):
-        Robot.drivetrain.set_driver_centric((0, 0), 0)
         self.scheduler.cancelAll()
 
     # called once when the robot is entering or in the state of "Disabled"

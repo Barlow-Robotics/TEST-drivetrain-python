@@ -40,7 +40,7 @@ class Climber(Subsystem):
         
     def update_table(self) -> None:
         table = ntcore.NetworkTableInstance.getDefault().getTable("climber")
-
+        # underscore represents a new folder in advantagescope. 
         table.putNumber("climber_motor_revolutions", self.climber_motor.get_sensor_position())
         table.putBoolean("climber_moving", self.moving)
         table.putBoolean("climber_zeroed", self.zeroed)
