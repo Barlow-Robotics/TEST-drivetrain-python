@@ -42,7 +42,7 @@ class Keymap:
         DRIVE_TO_LEFT_POSE = commands2.button.Trigger(
             lambda: Controllers.DRIVER_CONTROLLER.getRawAxis(-controllerDRIVER.LT) > config.trigger_threshold
         )
-        ALGAE_ALIGN = commands2.button.JoystickButton(
+        cool_button_motorspin = commands2.button.JoystickButton(
             Joysticks.joysticks[Controllers.DRIVER], controllerDRIVER.RB
         )
 

@@ -9,9 +9,21 @@ import config
 
 from toolkit.subsystem import Subsystem
 
-class SingleMotorSubsystem(Subsystem):
-    ...
+class SingleMotorSubsystem(Subsystem): # single motor class 
+    def __init__(self): 
+        super().__init__()
+        self.motor = TalonFX(config.front_left_move_id, foc=config.foc_active, config=config.MOVE_CONFIG, inverted=config.front_left_move_inverted)
+        
+    def move_motor(self):
+        self.motor.set_voltage(0.1) # set speed of motor to 0.1 volts
 
+    def stop_motor(self):
+        self.motor.set_voltage(0)
+
+    def init(self):
+        print("Initializing single motor subsystem")
+        self.motor.init() #IMPORTANT: HAVE TO INIT ALL TALONFX MOTORS OR ERROR AND DO IT HERE NOT AT __init__
+    # order of operations: __init__() called first, then init() called later.
 
 class Robot:
     drivetrain = SingleMotorSubsystem()
@@ -31,18 +43,3 @@ class Field:
         print("Updating Table")
         update_table(Field.nt_reporter, False)
 
-class SingleMotorSubsystem(Subsystem): # single motor class 
-    def __init__(self): 
-        super().__init__()
-        self.motor = TalonFX(config.front_left_move_id, foc=config.foc_active, config=config.MOVE_CONFIG, inverted=config.front_left_move_inverted)
-        # creates motor
-        
-    def moveMotor(self):
-        self.motor.set_voltage(0.1) # set speed of motor to 0.1 volts
-        # pass
-    def stopMotor(self):
-        self.motor.set_voltage(0)
-# [#         pass ]#
-        # pass    
-    def init(self):
-        print("Initializing single motor subsystem")

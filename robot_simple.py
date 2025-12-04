@@ -26,7 +26,7 @@ import sys
 
 # import the variables
 import utils
-from oi.OI import OI
+# from oi.OI import OI VERY PROBLEMATIC ERROR B/C OF STATIC CLASSES
 
 # defining the class "_Robot"
 class _Robot(wpilib.TimedRobot):
@@ -65,7 +65,6 @@ class _Robot(wpilib.TimedRobot):
                     if isinstance(v, Subsystem) and hasattr(v, "init")
                 }.values()
             )
-
             # sensors: list = list(
             #     {k: v for k, v in Sensors.__dict__.items()
             #       if isinstance(v, sensors.Sensor) and hasattr(v, 'init')}.values()
@@ -89,7 +88,7 @@ class _Robot(wpilib.TimedRobot):
 
         # reducing noise from the CAN bus (unused can-bus traffic optimization)
         ctre.hardware.ParentDevice.optimize_bus_utilization_for_all()
-        
+        self.robot = Robot()
         Field.update_field_table()
 
         # log that we have properly initialized the robot
@@ -120,12 +119,14 @@ class _Robot(wpilib.TimedRobot):
         # run the scheduler if we are not in debug mode
         if not config.DEBUG_MODE:
             try:
+                # pass
                 self.scheduler.run()
             except Exception as e:
                 self.log.error(e)
                 self.nt.getTable("errors").putString("command scheduler", str(e))
         else:
             try:
+                # pass
                 self.scheduler.run()
             except Exception as e:
                 self.log.error(e)
@@ -135,9 +136,9 @@ class _Robot(wpilib.TimedRobot):
 
     # called once in the transition from any state into teleop
     def teleopInit(self):
-        Keymap.Drivetrain.ALGAE_ALIGN.onTrue(
-            Robot.drivetrain.moveMotor()
-        ).onFalse(Robot.drivetrain.moveMotor())
+        Keymap.Drivetrain.cool_button_motorspin.onTrue(
+            self.robot.drivetrain.move_motor()
+        ).onFalse(self.robot.drivetrain.stop_motor())
         
         self.log.info("Teleop initialized")
 
@@ -154,6 +155,7 @@ class _Robot(wpilib.TimedRobot):
 
     # at the end of auto set the x and y velocity to 0 and the angle to forward and cancel the auto path
     def autonomousExit(self):
+        # pass
         self.scheduler.cancelAll()
 
     # called once when the robot is entering or in the state of "Disabled"

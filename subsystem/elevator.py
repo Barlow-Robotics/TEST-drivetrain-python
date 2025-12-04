@@ -9,7 +9,8 @@ from units.SI import meters, meters_to_inches
 
 
 class Elevator(Subsystem):
-    def __init__(self):
+    def __init__(self): #raise Exception(""):
+        raise Exception("")
         super().__init__()
         self.leader_motor: TalonFX = TalonFX(
             config.elevator_lead_id,
