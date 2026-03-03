@@ -6,7 +6,6 @@ from pathplannerlib.auto import AutoBuilder
 import config
 
 from robot_systems import Robot, Field
-from utils.field import get_red_pose
 from command import *
 
 from autos import AutoRoutine
